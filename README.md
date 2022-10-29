@@ -25,6 +25,6 @@
 | **`location/`**             | **`POST`**   | add new location                            |
 | **`location/<id>/`**        | **`PATCH`**  | update location's info by id                |
 | **`location/<id>/`**        | **`DELETE`** | delete location by id                       |
-| **`media/`**                | **`GET`**    | load (uploaded) image by name               |
+| **`media/<path>`**          | **`GET`**    | load (uploaded) image by name               |
 
 > made by YuZu :D
