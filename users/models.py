@@ -21,7 +21,7 @@ class User(models.Model):
 
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=30, null=True, blank=True)
-    username = models.CharField(max_length=20)
+    username = models.CharField(max_length=20, unique=True)
     password = models.CharField(max_length=128)
     role = models.CharField(max_length=9, choices=ROLES, default="member")
     age = models.PositiveIntegerField()
