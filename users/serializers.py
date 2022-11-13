@@ -3,6 +3,20 @@ from rest_framework import serializers
 from users.models import User, Location
 
 
+class ProhibitedEmailDomainValidator:
+    def __init__(self, prohibited_domains: list):
+        if not isinstance(prohibited_domains, list):
+            prohibited_domains = [prohibited_domains]
+
+        self.prohibited_domains = prohibited_domains
+
+    def __call__(self, value):
+        user_part, domain_part = value.rsplit("@", 1)
+
+        if domain_part in self.prohibited_domains:
+            raise serializers.ValidationError('Prohibited email domain')
+
+
 class UserSerializer(serializers.ModelSerializer):
     locations = serializers.SlugRelatedField(
         read_only=True,
@@ -22,6 +36,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
         many=True,
         slug_field="name"
     )
+
+    email = serializers.EmailField(validators=[ProhibitedEmailDomainValidator(["rambler.ru"])])
 
     def is_valid(self, raise_exception=False):
         self._locations = self.initial_data.pop("locations")

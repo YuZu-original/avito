@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from ads.models import Ad, Category, Selection
 from ads.permissions import AdEditPermission, SelectionEditPermission
 from ads.serializers import AdDetailSerializer, AdSerializer, SelectionSerializer, SelectionDetailSerializer, \
-    SelectionListSerializer
+    SelectionListSerializer, AdCreateSerializer, CategoryCreateSerializer
 from avito import settings
 from users.models import User
 
@@ -53,22 +53,9 @@ class CategoryDetailView(DetailView):
         })
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class CategoryCreateView(CreateView):
-    model = Category
-    fields = ["name"]
-
-    def post(self, request, *args, **kwargs):
-        category_data = json.loads(request.body)
-
-        category = Category.objects.create(
-            name=category_data["name"],
-        )
-
-        return JsonResponse({
-            "id": category.id,
-            "name": category.name,
-        })
+class CategoryCreateView(CreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryCreateSerializer
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -156,37 +143,9 @@ class AdDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class AdCreateView(CreateView):
-    model = Ad
-    fields = ["name", "author", "price", "description", "is_published", "category"]
-
-    def post(self, request, *args, **kwargs):
-        ad_data = json.loads(request.body)
-
-        author = get_object_or_404(User, ad_data["author_id"])
-        category = get_object_or_404(Category, ad_data["category_id"])
-
-        ad = Ad.objects.create(
-            name=ad_data["name"],
-            author=author,
-            price=ad_data["price"],
-            description=ad_data["description"],
-            is_published=ad_data["is_published"],
-            category=category,
-        )
-
-        return JsonResponse({
-            "id": ad.id,
-            "name": ad.name,
-            "author_id": ad.author_id,
-            "author": ad.author.first_name,
-            "price": ad.price,
-            "description": ad.description,
-            "is_published": ad.is_published,
-            "category_id": ad.category_id,
-            "image": ad.image.url if ad.image else None,
-        })
+class AdCreateView(CreateAPIView):
+    queryset = Ad.objects.all()
+    serializer_class = AdCreateSerializer
 
 
 class AdUpdateView(UpdateAPIView):

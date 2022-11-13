@@ -1,5 +1,16 @@
+from datetime import date
+
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+
+from users.utils import calculate_age
+
+
+def check_birth_date(value: date):
+    age = calculate_age(value)
+    if age < 9:
+        raise ValidationError('%(value)s is too small', params={'value': value})
 
 
 class Location(models.Model):
@@ -26,6 +37,8 @@ class User(AbstractUser):
     role = models.CharField(max_length=9, choices=ROLES, default=MEMBER)
     age = models.PositiveIntegerField(null=True)
     locations = models.ManyToManyField(Location)
+    birth_date = models.DateField(validators=[check_birth_date], null=True)
+    email = models.EmailField(unique=True, null=True)
 
     class Meta:
         verbose_name = "Пользователь"
