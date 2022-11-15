@@ -20,6 +20,8 @@
 | **`user/create/`**          | **`POST`**   | add new user                                |
 | **`user/<id>/update/`**     | **`PATCH`**  | update user's info by id                    |
 | **`user/<id>/delete/`**     | **`DELETE`** | delete user by id                           |
+| **`user/token/`**           | **`POST`**   | create access and refresh tokens by username and password|
+| **`user/token/refresh/`**   | **`POST`**   | return access token by refresh token        |
 | **`location/`**             | **`GET`**    | get all locations                           |
 | **`location/<id>/`**        | **`GET`**    | get detail information about location by id |
 | **`location/`**             | **`POST`**   | add new location                            |
